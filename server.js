@@ -20,18 +20,18 @@ app.use('/js', express.static(path.join(__dirname, 'js')));
 app.use('/terms', express.static(path.join(__dirname, 'terms_and_conditions')));
 
 // Trang chủ
-// app.get('/', (req, res) => {
-//   res.sendFile(path.join(__dirname, 'web', 'index.html'));
-// });
 app.get('/', (req, res) => {
-    const indexPath = path.join(__dirname, 'web', 'index.html');
-    // Kiểm tra xem server có tìm thấy file không, nếu không thì hiện chữ thay thế
-    res.sendFile(indexPath, (err) => {
-        if (err) {
-            res.status(200).send("Server CookEasy đã chạy, nhưng không tìm thấy file index.html trong thư mục web!");
-        }
-    });
+  res.sendFile(path.join(__dirname, 'web', 'index.html'));
 });
+// app.get('/', (req, res) => {
+//     const indexPath = path.join(__dirname, 'web', 'index.html');
+//     // Kiểm tra xem server có tìm thấy file không, nếu không thì hiện chữ thay thế
+//     res.sendFile(indexPath, (err) => {
+//         if (err) {
+//             res.status(200).send("Server CookEasy đã chạy, nhưng không tìm thấy file index.html trong thư mục web!");
+//         }
+//     });
+// });
 
 // API routes
 app.use('/api', recipeRoutes);
