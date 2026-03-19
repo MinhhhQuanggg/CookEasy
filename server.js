@@ -20,8 +20,17 @@ app.use('/js', express.static(path.join(__dirname, 'js')));
 app.use('/terms', express.static(path.join(__dirname, 'terms_and_conditions')));
 
 // Trang chủ
+// app.get('/', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'web', 'index.html'));
+// });
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'web', 'index.html'));
+    const indexPath = path.join(__dirname, 'web', 'index.html');
+    // Kiểm tra xem server có tìm thấy file không, nếu không thì hiện chữ thay thế
+    res.sendFile(indexPath, (err) => {
+        if (err) {
+            res.status(200).send("Server CookEasy đã chạy, nhưng không tìm thấy file index.html trong thư mục web!");
+        }
+    });
 });
 
 // API routes
@@ -35,7 +44,11 @@ mongoose.connect(process.env.MONGODB_URI) // Bỏ các option cũ vì Mongoose 6
 .catch((err) => console.error('❌ Lỗi kết nối MongoDB:', err));
 
 // Server chạy
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`🚀 Server đang chạy tại http://localhost:${PORT}`);
-});
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`🚀 Server đang chạy tại http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
