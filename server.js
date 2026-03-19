@@ -2,22 +2,27 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const path = require('path'); // THÊM DÒNG NÀY
+
 const recipeRoutes = require('./routes/recipeRoutes');
 const favoriteRoutes = require('./routes/favoriteRoutes');
 const userRoutes = require('./routes/userRoutes');
 
 const app = express();
 
-// Middleware
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
-// Phục vụ giao diện từ thư mục "public"
-app.use('/css', express.static('css'));
-app.use('/js', express.static('js'));
-app.use('/web', express.static('web'));
-app.use('/terms', express.static('terms_and_conditions'));
+// Phục vụ file tĩnh
+app.use(express.static(path.join(__dirname, 'web'))); 
+app.use('/css', express.static(path.join(__dirname, 'css')));
+app.use('/js', express.static(path.join(__dirname, 'js')));
+app.use('/terms', express.static(path.join(__dirname, 'terms_and_conditions')));
 
+// Trang chủ
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'web', 'index.html'));
+});
 
 // API routes
 app.use('/api', recipeRoutes);
@@ -25,10 +30,7 @@ app.use('/api', favoriteRoutes);
 app.use('/api/users', userRoutes);
 
 // Kết nối MongoDB
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
+mongoose.connect(process.env.MONGODB_URI) // Bỏ các option cũ vì Mongoose 6+ tự có rồi
 .then(() => console.log('✅ Đã kết nối MongoDB Atlas'))
 .catch((err) => console.error('❌ Lỗi kết nối MongoDB:', err));
 
